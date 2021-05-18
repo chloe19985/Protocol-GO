@@ -14,7 +14,7 @@ const (
 	MC_3E_BIN_SUB_HEADER uint16 = 0x5000 //副帧头
 	MC_3E_BIN_NET_NUMBER = 0x00   //请求目标网络编号
 	MC_3E_BIN_OBJECT     = 0xFF   //请求目标站号
-	MC_3E_BIN_IO_NUMBER uint16 = 0x03FF //请求目标模板IO编号
+	MC_3E_BIN_IO_NUMBER uint16 = 0xFF03 //请求目标模板IO编号
 	MC_3E_BIN_SLAVE      = 0x00   //请求多占站号
 
 	MC_3E_BIN_ADU_HEADER          = 9  //副帧头~请求数据长度
@@ -56,33 +56,22 @@ type binPackager struct {
 	SlaveId byte
 }
 
-//type binPackager struct {
-//	// For synchronization between messages of server & client
-//	transactionId uint32
-//	// Broadcast address is 0
-//	SlaveId byte
-//}
 
 func (mb *binTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 	//var ptr int = 0
-	adu = make([]byte, MC_3E_BIN_ADU_HEADER+2+2+2+6+len(pdu.Data))
-	//副帧头
-	//adu[0] = byte(MC_3E_BIN_SUB_HEADER>>8)
-	//adu[1] = byte(MC_3E_BIN_SUB_HEADER)
+	adu = make([]byte, MC_3E_BIN_ADU_HEADER + 2 + 2 + 2 + 1 + 3 + 2)
 	binary.BigEndian.PutUint16(adu,MC_3E_BIN_SUB_HEADER)
 	//网络编号
 	adu[2] = byte(MC_3E_BIN_NET_NUMBER)
 	//PC编号
 	adu[3] = byte(MC_3E_BIN_OBJECT)
 	//IO编号
-	//adu[4] = byte(MC_3E_BIN_IO_NUMBER>>8) & 0x00FF
-	//adu[5] = MC_3E_BIN_IO_NUMBER & 0x00FF
 	binary.BigEndian.PutUint16(adu[4:],MC_3E_BIN_IO_NUMBER)
 	//请求多点站号
 	adu[6] = byte(MC_3E_BIN_SLAVE)
 	//请求数据长度
-	length := uint16(2 + 2 + 2 + 1 + len(pdu.Data))
-	binary.BigEndian.PutUint16(adu[7:], length)
+	length := uint16(2 + 2 + 2 + 1 + 5)
+	binary.LittleEndian.PutUint16(adu[7:], length)
 	//保留
 	copy(adu[MC_3E_BIN_ADU_HEADER:],pdu.Retain)
 	//指令
@@ -90,9 +79,9 @@ func (mb *binTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 	//子指令
 	copy(adu[MC_3E_BIN_SUBCOMMAND_POSITION:], pdu.SubCommand)
 	//寄存器信息
-	adu[MC_3E_BIN_REGISTER_POSITION] = pdu.SoftComponentCode
-	copy(adu[MC_3E_BIN_REGISTER_POSITION+1:], pdu.Data)
-
+	copy(adu[MC_3E_BIN_REGISTER_POSITION:] ,pdu.SoftComponentAddress)
+	adu[MC_3E_BIN_REGISTER_POSITION+3] = pdu.SoftComponentCode
+	copy(adu[MC_3E_BIN_REGISTER_POSITION+4:], pdu.SoftComponentNumber)
 	return
 }
 
@@ -108,20 +97,22 @@ func (mb *binTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 
 }*/
 func (mb *binTransporter)Decode(adu []byte) (pdu *ProtocolDataUnit, err error) {
-	length := binary.BigEndian.Uint16(adu[MC_3E_BIN_ADU_HEADER-2:])
+	length := binary.LittleEndian.Uint16(adu[MC_3E_BIN_ADU_HEADER-2:])
+	//fmt.Printf("%d",length)
 	pduLength := len(adu) - MC_3E_BIN_ADU_HEADER
 	if pduLength <= 0 || pduLength != int(length) {
 		err = fmt.Errorf("length in response '%v' does not match pdu data length '%v'", length, pduLength)
 		return
 	}
 	pdu = &ProtocolDataUnit{}
-	pdu.Retain = adu[MC_3E_BIN_ADU_HEADER:]
-	pdu.Command = adu[MC_3E_BIN_COMMAND_POSITION:]
-	pdu.SubCommand = adu[MC_3E_BIN_SUBCOMMAND_POSITION:]
-	pdu.SoftComponentCode = adu[MC_3E_BIN_REGISTER_POSITION]
-	//pdu.SoftComponentAddress = adu[MC_3E_BIN_REGISTER_POSITION+1:]
+	//pdu.Retain = adu[MC_3E_BIN_ADU_HEADER:]
+	//pdu.Command = adu[MC_3E_BIN_COMMAND_POSITION:]
+	//pdu.SubCommand = adu[MC_3E_BIN_SUBCOMMAND_POSITION:]
+	//pdu.SoftComponentAddress = adu[MC_3E_BIN_REGISTER_POSITION:]
+	//pdu.SoftComponentCode = adu[MC_3E_BIN_REGISTER_POSITION+3]
 	//pdu.SoftComponentNumber = adu[MC_3E_BIN_REGISTER_POSITION+4:]
-	pdu.Data = adu[MC_3E_BIN_REGISTER_POSITION+1:]
+	pdu.EndCode = adu[MC_3E_BIN_ADU_HEADER:]
+	pdu.Data = adu[MC_3E_BIN_ADU_HEADER + 2:]
 	return
 }
 
@@ -134,7 +125,7 @@ type binTransporter struct {
 	IdleTimeout time.Duration
 	//传输日志
 	Logger *log.Logger
-	//
+
 	//	// TCP connection
 	mu           sync.Mutex
 	conn         net.Conn
@@ -183,17 +174,25 @@ func (mb *binTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 		return
 	}
 	//发送数据
-	mb.logf("sending % x", aduRequest)
+	mb.logf("sending % X", aduRequest)
 	if _, err = mb.conn.Write(aduRequest); err != nil {
 		return
 	}
+	//n,_ := mb.conn.Write(aduRequest)
+	//fmt.Printf("%d\n",n)
+	//fmt.Printf("aduRequest:%d\n",aduRequest)
 	//读取副帧头~请求数据长度
 	var data [MC_3E_MAX_ADU_LENGTH]byte
+	//ReadFull准确地从mb.conn中读取len(data)字节到data。即先读取副帧头~请求数据长度
+	n,_ := io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER])
+	fmt.Printf("n:%d\n",n)
 	if _, err = io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER]); err != nil {
 		return
 	}
+	fmt.Printf("aduRequest:%d\n",aduRequest)
 	//读取请求数据长度
-	length := int(binary.BigEndian.Uint16(data[MC_3E_BIN_ADU_HEADER-2:]))
+	length := int(binary.LittleEndian.Uint16(data[MC_3E_BIN_ADU_HEADER-2:]))
+	//fmt.Printf("length:%d/n",length)
 	if length <= 0 {
 		mb.flush(data[:])
 		err = fmt.Errorf("length in response header '%v' must not be 0", length)
@@ -210,6 +209,7 @@ func (mb *binTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 	}
 	aduResponse = data[:length]
 	mb.logf("received % x\n", aduResponse)
+	fmt.Printf("received % X\n",aduResponse)
 	return
 }
 
@@ -222,7 +222,6 @@ func (mb *binTransporter) Close() error {
 
 //断开连接
 func (mb *binTransporter) close() (err error) {
-
 	if mb.conn != nil {
 		err = mb.conn.Close()
 		mb.conn = nil

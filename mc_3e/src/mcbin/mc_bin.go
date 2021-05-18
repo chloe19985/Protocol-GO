@@ -51,14 +51,14 @@ const (
 		   以十六点为单位读取位软元件
 		批量写入：同上
 	*/
-	DeviceRead uint16 = 0x0401
-	DeviceWrite uint16  = 0x1401
+	DeviceRead uint16 = 0x0104
+	DeviceWrite uint16  = 0x0114
 )
 
 //子指令
 const (
 	SubCommand1 uint16 = 0x0000
-	SubCommand2 uint16 = 0x0001
+	SubCommand2 uint16 = 0x0100
 )
 
 
@@ -77,7 +77,7 @@ const (
 	ExceptionCode11 uint16 = 0xC05C
 	ExceptionCode12 uint16 = 0xC05F
 	ExceptionCode13 uint16 = 0xC060
-	ExceptionCode14 uint16  = 0xC061
+	ExceptionCode14 uint16 = 0xC061
 	ExceptionCode15 uint16 = 0xC06F
 	ExceptionCode16 uint16 = 0xC0D8
 	ExceptionCode17 uint16 = 0xC200
@@ -91,7 +91,7 @@ const (
 
 //定义一个Mc3eError结构体
 type Mc3eError struct {
-	Command       []byte
+	EndCode       []byte
 	ExceptionCode []byte
 }
 
@@ -149,7 +149,7 @@ func (e *Mc3eError) Error() string {
 	default:
 		name = "未知错误"
 	}
-	return fmt.Sprintf("mc3e:错误码'%x'(%s),function '%x'", e.ExceptionCode, name, e.Command)
+	return fmt.Sprintf("mc3e:错误码'%x'(%s),function '%x'", e.ExceptionCode, name, e.EndCode)
 }
 
 /*
@@ -165,9 +165,10 @@ type ProtocolDataUnit struct {
 	Retain               []byte
 	Command              []byte
 	SubCommand           []byte
+	SoftComponentAddress []byte
 	SoftComponentCode    byte
-	//SoftComponentAddress []byte
-	//SoftComponentNumber  []byte
+	SoftComponentNumber  []byte
+	EndCode              []byte
 	Data                 []byte
 }
 
