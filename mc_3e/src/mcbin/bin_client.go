@@ -105,12 +105,6 @@ func (mb *binTransporter)Decode(adu []byte) (pdu *ProtocolDataUnit, err error) {
 		return
 	}
 	pdu = &ProtocolDataUnit{}
-	//pdu.Retain = adu[MC_3E_BIN_ADU_HEADER:]
-	//pdu.Command = adu[MC_3E_BIN_COMMAND_POSITION:]
-	//pdu.SubCommand = adu[MC_3E_BIN_SUBCOMMAND_POSITION:]
-	//pdu.SoftComponentAddress = adu[MC_3E_BIN_REGISTER_POSITION:]
-	//pdu.SoftComponentCode = adu[MC_3E_BIN_REGISTER_POSITION+3]
-	//pdu.SoftComponentNumber = adu[MC_3E_BIN_REGISTER_POSITION+4:]
 	pdu.EndCode = adu[MC_3E_BIN_ADU_HEADER:]
 	pdu.Data = adu[MC_3E_BIN_ADU_HEADER + 2:]
 	return
@@ -179,17 +173,20 @@ func (mb *binTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 		return
 	}
 	//n,_ := mb.conn.Write(aduRequest)
+	//fmt.Printf("n:%d\n",n)
+	//fmt.Printf("mb.com:%q\n",mb.conn)
+	//n,_ := mb.conn.Write(aduRequest)
 	//fmt.Printf("%d\n",n)
 	//fmt.Printf("aduRequest:%d\n",aduRequest)
 	//读取副帧头~请求数据长度
 	var data [MC_3E_MAX_ADU_LENGTH]byte
-	//ReadFull准确地从mb.conn中读取len(data)字节到data。即先读取副帧头~请求数据长度
-	n,_ := io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER])
-	fmt.Printf("n:%d\n",n)
+	//ReadFull从mb.conn中读取len(data)字节到data。即先读取副帧头~请求数据长度
+	//n,_ := io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER])
+	//fmt.Printf("n:%d\n",n)
 	if _, err = io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER]); err != nil {
 		return
 	}
-	fmt.Printf("aduRequest:%d\n",aduRequest)
+
 	//读取请求数据长度
 	length := int(binary.LittleEndian.Uint16(data[MC_3E_BIN_ADU_HEADER-2:]))
 	//fmt.Printf("length:%d/n",length)
@@ -208,8 +205,7 @@ func (mb *binTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 		return
 	}
 	aduResponse = data[:length]
-	mb.logf("received % x\n", aduResponse)
-	fmt.Printf("received % X\n",aduResponse)
+	mb.logf("received % X\n", aduResponse)
 	return
 }
 

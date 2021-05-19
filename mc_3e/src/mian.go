@@ -23,9 +23,9 @@ func main() {
 
 	client := mcbin.NewClient(handler)
 
-	results, err := client.ReadXCoils(15, 10)
+	results, err := client.ReadXCoils(1777,2 )
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	fmt.Printf("results:% x\n", results)
+	fmt.Printf("results:% X\n", results)
 }
