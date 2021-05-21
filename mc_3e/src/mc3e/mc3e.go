@@ -1,4 +1,4 @@
-package mcbin
+package mc3e
 
 import (
 	"encoding/binary"
@@ -14,7 +14,7 @@ const(
 	MC_3E_BIN_TYPE_SM = 0x91 //特殊继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_L  = 0x92 //所存继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_F  = 0x93 //报警器 位 输入地址为10进制
-	MC_3E_BIN_TYPE_V  = 0x94 //边沿继电器 位 输入地址为10进制
+	//MC_3E_BIN_TYPE_V  = 0x94 //边沿继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_B  = 0xA0 //链接继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_TS = 0xC1 //定时器触点 位 输入地址为10进制
 	MC_3E_BIN_TYPE_TC = 0xC0 //定时器线圈 位 输入地址为10进制
@@ -33,13 +33,19 @@ const(
 	MC_3E_BIN_TYPE_SW = 0xB5 //链接特殊继电器 字 输入地址为16进制
 	MC_3E_BIN_TYPE_Z  = 0xCC //变址寄存器 字 输入地址为10进制
 	MC_3E_BIN_TYPE_R  = 0xAF //文件寄存器 字 输入地址为10进制
-	MC_3E_BIN_TYPE_ZR = 0xB0 //文件寄存器 字 输入地址为16进制
+	//MC_3E_BIN_TYPE_ZR = 0xB0 //文件寄存器 字 输入地址为16进制
 	//MC_3E_BIN_TYPE_END
 )
 
-//保留
+//固定码
 const (
+	Sub_Header uint16 = 0x5000
+	Net_Number = 0x00
+	ObjeCt_Number = 0xFF
+	IO_Number = 0xFF03
+	Slave_Number = 0x00
 	Retain_Command uint16 = 0x0000
+	MC_3E_MAX_ADU_LENGTH = 512
 )
 
 //指令

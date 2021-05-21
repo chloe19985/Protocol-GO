@@ -1,4 +1,4 @@
-package mcbin
+package mc3e
 func dataBlock(value ...uint16) []byte {
 	b := make([]uint16, 2)
 	data := make([]byte, 5)
@@ -53,4 +53,21 @@ func Uint16ToBytes(v uint16) []byte {
 	b[0] = byte(v >> 8)
 	b[1] = byte(v)
 	return b
+}
+
+
+func McSetBinToChar(tab []byte , index uint8, value uint16) {
+	tab[(index)]   = McBinToChar(byte(value) >> 4)
+	tab[(index)+1] = McBinToChar(byte(value) & 0x0F)
+}
+func McBinToChar( ucByte byte) (b byte){
+	if (ucByte <= 0x09) {
+		b = '0' + ucByte
+		return b
+	}
+	if ((ucByte >= 0x0A) && (ucByte <= 0x0F)) {
+		b := ucByte - 0x0A + 'A'
+		return b
+	}
+	return
 }

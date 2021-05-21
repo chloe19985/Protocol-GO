@@ -1,4 +1,4 @@
-package mcbin
+package mc3e
 
 import (
 	"encoding/binary"
@@ -11,18 +11,18 @@ import (
 )
 
 const (
-	MC_3E_BIN_SUB_HEADER uint16 = 0x5000 //副帧头
-	MC_3E_BIN_NET_NUMBER = 0x00   //请求目标网络编号
-	MC_3E_BIN_OBJECT     = 0xFF   //请求目标站号
-	MC_3E_BIN_IO_NUMBER uint16 = 0xFF03 //请求目标模板IO编号
-	MC_3E_BIN_SLAVE      = 0x00   //请求多占站号
+	//MC_3E_BIN_SUB_HEADER uint16 = 0x5000 //副帧头
+	//MC_3E_BIN_NET_NUMBER = 0x00   //请求目标网络编号
+	//MC_3E_BIN_OBJECT     = 0xFF   //请求目标站号
+	//MC_3E_BIN_IO_NUMBER uint16 = 0xFF03 //请求目标模板IO编号
+	//MC_3E_BIN_SLAVE      = 0x00   //请求多占站号
 
 	MC_3E_BIN_ADU_HEADER          = 9  //副帧头~请求数据长度
 	MC_3E_BIN_COMMAND_POSITION    = 11 //指令
 	MC_3E_BIN_SUBCOMMAND_POSITION = 13 //子指令
 	MC_3E_BIN_REGISTER_POSITION   = 15 //寄存器相关信息长度
 
-	MC_3E_MAX_ADU_LENGTH = 512 //报文最大长度
+	//MC_3E_MAX_ADU_LENGTH = 512 //报文最大长度
 
 	// Default TCP timeout is not set
 	tcpTimeout     = 10 * time.Second
@@ -60,15 +60,15 @@ type binPackager struct {
 func (mb *binTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 	//var ptr int = 0
 	adu = make([]byte, MC_3E_BIN_ADU_HEADER + 2 + 2 + 2 + 1 + 3 + 2)
-	binary.BigEndian.PutUint16(adu,MC_3E_BIN_SUB_HEADER)
+	binary.BigEndian.PutUint16(adu,Sub_Header)
 	//网络编号
-	adu[2] = byte(MC_3E_BIN_NET_NUMBER)
+	adu[2] = byte(Net_Number)
 	//PC编号
-	adu[3] = byte(MC_3E_BIN_OBJECT)
+	adu[3] = byte(ObjeCt_Number)
 	//IO编号
-	binary.BigEndian.PutUint16(adu[4:],MC_3E_BIN_IO_NUMBER)
+	binary.BigEndian.PutUint16(adu[4:],IO_Number)
 	//请求多点站号
-	adu[6] = byte(MC_3E_BIN_SLAVE)
+	adu[6] = byte(Slave_Number)
 	//请求数据长度
 	length := uint16(2 + 2 + 2 + 1 + 5)
 	binary.LittleEndian.PutUint16(adu[7:], length)
