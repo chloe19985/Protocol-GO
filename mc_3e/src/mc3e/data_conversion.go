@@ -46,7 +46,7 @@ func dataBlockSuffix(suffix []byte, value ...uint16) []byte {
 	return data
 }
 */
-
+//小端
 func Uint16ToBytes(v uint16) []byte {
 	b := make([]byte, 2)
 	//_ = b[1] // early bounds check to guarantee safety of writes below
@@ -54,7 +54,16 @@ func Uint16ToBytes(v uint16) []byte {
 	b[1] = byte(v)
 	return b
 }
-
+//大端
+func Uint32ToBytes(v uint32) []byte {
+	b := make([]byte, 4)
+	//_ = b[1] // early bounds check to guarantee safety of writes below
+	b[0] = byte(v >> 24)
+	b[1] = byte(v >> 16)
+	b[2] = byte(v >> 8)
+	b[3] = byte(v)
+	return b
+}
 
 func McSetBinToChar(tab []byte , index uint8, value uint16) {
 	tab[(index)]   = McBinToChar(byte(value) >> 4)
@@ -66,7 +75,23 @@ func McBinToChar( ucByte byte) (b byte){
 		return b
 	}
 	if ((ucByte >= 0x0A) && (ucByte <= 0x0F)) {
-		b := ucByte - 0x0A + 'A'
+		b = ucByte - 0x0A + 'A'
+		return b
+	}
+	return
+}
+
+func McSetCharToBin(tab []byte , index uint8, value uint16) {
+	tab[(index)]   = McCharToBin(byte(value) >> 4)
+	tab[(index)+1] = McCharToBin(byte(value) & 0x0F)
+}
+func McCharToBin( ucCharacter byte) (b byte){
+	if( ( ucCharacter >= '0' ) && ( ucCharacter <= '9' ) ) {
+		b = ucCharacter - '0'
+		return b
+	}
+	if( ( ucCharacter >= 'A' ) && ( ucCharacter <= 'F' ) ) {
+		b = ucCharacter - 'A' + 0x0A
 		return b
 	}
 	return

@@ -1,6 +1,7 @@
 package mc3e
 
 import (
+	"encoding/binary"
 	"fmt"
 )
 
@@ -50,10 +51,10 @@ func (mb *client) ReadSCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadXCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 1777 {
+	/*if quantity < 0 || quantity > 01777 {
 		err = fmt.Errorf("MC_3E_X:quantity '%v' must be between '%v' and '%v'", quantity, 0, 1777)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -78,10 +79,10 @@ func (mb *client) ReadXCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadYCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 1777 {
+	/*if quantity < 0 || quantity > 1777 {
 		err = fmt.Errorf("MC_3E_Y:quantity '%v' must be between '%v' and '%v'", quantity, 0, 1777)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -106,10 +107,10 @@ func (mb *client) ReadYCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadMCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity >7679 {
+	/*if quantity < 0 || quantity >7679 {
 		err = fmt.Errorf("MC_3E_M:quantity '%v' must be between '%v' and '%v'", quantity, 0, 7679)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -134,10 +135,10 @@ func (mb *client) ReadMCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadSMCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 9999 {
+	/*if quantity < 0 || quantity > 9999 {
 		err = fmt.Errorf("MC_3E_SM:quantity '%v' must be between '%v' and '%v'", quantity, 0, 9999)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -162,10 +163,10 @@ func (mb *client) ReadSMCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadLCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 7679 {
+	/*if quantity < 0 || quantity > 7679 {
 		err = fmt.Errorf("MC_3E_L:quantity '%v' must be between '%v' and '%v'", quantity, 0, 7679)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -190,10 +191,10 @@ func (mb *client) ReadLCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadFCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 127 {
+	/*if quantity < 0 || quantity > 127 {
 		err = fmt.Errorf("MC_3E_F:quantity '%v' must be between '%v' and '%v'", quantity, 0, 127)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -218,10 +219,10 @@ func (mb *client) ReadFCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadBCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 0XFF {
+	/*if quantity < 0 || quantity > 0XFF {
 		err = fmt.Errorf("MC_3E_B:quantity '%v' must be between '%v' and '%v'", quantity, 0, 0XFF)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -246,10 +247,10 @@ func (mb *client) ReadBCoils(address uint16, quantity uint16) (results []byte, e
 }
 
 func (mb *client) ReadTSCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 511 {
+	/*if quantity < 0 || quantity > 511 {
 		err = fmt.Errorf("MC_3E_TS:quantity '%v' must be between '%v' and '%v'", quantity, 0, 511)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -274,10 +275,10 @@ func (mb *client) ReadTSCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadTCCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 511 {
+	/*if quantity < 0 || quantity > 511 {
 		err = fmt.Errorf("MC_3E_TC:quantity '%v' must be between '%v' and '%v'", quantity, 0, 511)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -302,10 +303,10 @@ func (mb *client) ReadTCCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadSSCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 15 {
+	/*if quantity < 0 || quantity > 15 {
 		err = fmt.Errorf("MC_3E_SS:quantity '%v' must be between '%v' and '%v'", quantity, 0, 15)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -330,10 +331,10 @@ func (mb *client) ReadSSCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadSCCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 15 {
+	/*if quantity < 0 || quantity > 15 {
 		err = fmt.Errorf("MC_3E_SC:quantity '%v' must be between '%v' and '%v'", quantity, 0, 15)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -358,10 +359,10 @@ func (mb *client) ReadSCCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadCSCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 255 {
+	/*if quantity < 0 || quantity > 255 {
 		err = fmt.Errorf("MC_3E_CS:quantity '%v' must be between '%v' and '%v'", quantity, 0, 255)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -386,10 +387,10 @@ func (mb *client) ReadCSCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadCCCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 255 {
+	/*if quantity < 0 || quantity > 255 {
 		err = fmt.Errorf("MC_3E_CC:quantity '%v' must be between '%v' and '%v'", quantity, 0, 255)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -414,10 +415,10 @@ func (mb *client) ReadCCCoils(address uint16, quantity uint16) (results []byte, 
 }
 
 func (mb *client) ReadSBCoils(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 0X01FF {
+	/*if quantity < 0 || quantity > 0X01FF {
 		err = fmt.Errorf("MC_3E_SB:quantity '%v' must be between '%v' and '%v'", quantity, 0, 0X01FF)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -443,10 +444,10 @@ func (mb *client) ReadSBCoils(address uint16, quantity uint16) (results []byte, 
 
 //读寄存器
 func (mb *client) ReadDRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 7999 {
+	/*if quantity < 0 || quantity > 7999 {
 		err = fmt.Errorf("MC_3E_D:quantity '%v' must be between '%v' and '%v'", quantity, 0, 7999)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -471,10 +472,10 @@ func (mb *client) ReadDRegisters(address uint16, quantity uint16) (results []byt
 }
 
 func (mb *client) ReadSDRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 11999 {
+	/*if quantity < 0 || quantity > 11999 {
 		err = fmt.Errorf("MC_3E_SD:quantity '%v' must be between '%v' and '%v'", quantity, 0, 11999)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -499,10 +500,10 @@ func (mb *client) ReadSDRegisters(address uint16, quantity uint16) (results []by
 }
 
 func (mb *client) ReadWRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 0X01FF {
+	/*if quantity < 0 || quantity > 0X01FF {
 		err = fmt.Errorf("MC_3E_SD:quantity '%v' must be between '%v' and '%v'", quantity, 0, 0X01FF)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -527,10 +528,10 @@ func (mb *client) ReadWRegisters(address uint16, quantity uint16) (results []byt
 }
 
 func (mb *client) ReadTNRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 511 {
+	/*if quantity < 0 || quantity > 511 {
 		err = fmt.Errorf("MC_3E_TN:quantity '%v' must be between '%v' and '%v'", quantity, 0, 511)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -555,10 +556,10 @@ func (mb *client) ReadTNRegisters(address uint16, quantity uint16) (results []by
 }
 
 func (mb *client) ReadSNRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 15 {
+	/*if quantity < 0 || quantity > 15 {
 		err = fmt.Errorf("MC_3E_SN:quantity '%v' must be between '%v' and '%v'", quantity, 0, 15)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -583,10 +584,10 @@ func (mb *client) ReadSNRegisters(address uint16, quantity uint16) (results []by
 }
 
 func (mb *client) ReadCNRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 255 {
+	/*if quantity < 0 || quantity > 255 {
 		err = fmt.Errorf("MC_3E_CN:quantity '%v' must be between '%v' and '%v'", quantity, 0, 255)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -611,10 +612,10 @@ func (mb *client) ReadCNRegisters(address uint16, quantity uint16) (results []by
 }
 
 func (mb *client) ReadSWRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 0X01FF {
+	/*if quantity < 0 || quantity > 0X01FF {
 		err = fmt.Errorf("MC_3E_SW:quantity '%v' must be between '%v' and '%v'", quantity, 0, 0X01FF)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -639,10 +640,10 @@ func (mb *client) ReadSWRegisters(address uint16, quantity uint16) (results []by
 }
 
 func (mb *client) ReadZRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 19 {
+	/*if quantity < 0 || quantity > 19 {
 		err = fmt.Errorf("MC_3E_Z:quantity '%v' must be between '%v' and '%v'", quantity, 0, 19)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -667,10 +668,10 @@ func (mb *client) ReadZRegisters(address uint16, quantity uint16) (results []byt
 }
 
 func (mb *client) ReadRRegisters(address uint16, quantity uint16) (results []byte, err error) {
-	if quantity < 0 || quantity > 32767 {
+	/*if quantity < 0 || quantity > 32767 {
 		err = fmt.Errorf("MC_3E_R:quantity '%v' must be between '%v' and '%v'", quantity, 0, 32767)
 		return
-	}
+	}*/
 	request := ProtocolDataUnit{
 		Retain:               Uint16ToBytes(Retain_Command),
 		Command:              Uint16ToBytes(DeviceRead),
@@ -758,7 +759,10 @@ func (mb *client) send(request *ProtocolDataUnit) (response *ProtocolDataUnit, e
 func responseError(response *ProtocolDataUnit) error {
 	mbError := &Mc3eError{EndCode: response.EndCode}
 	if response.Data[0:] != nil && len(response.Data) > 0 {
-		mbError.ExceptionCode = response.EndCode
+		mbError.ExceptionCode = response.EndCode[0:2]
+		b := binary.LittleEndian.Uint16(mbError.ExceptionCode)
+		binary.BigEndian.PutUint16(mbError.ExceptionCode,b)
+
 	}
 	return mbError
 }

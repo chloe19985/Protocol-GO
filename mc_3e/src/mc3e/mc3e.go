@@ -12,7 +12,7 @@ const(
 	MC_3E_BIN_TYPE_Y  = 0x9D //输出继电器 位 输入地址为8进制
 	MC_3E_BIN_TYPE_M  = 0x90 //内部继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_SM = 0x91 //特殊继电器 位 输入地址为10进制
-	MC_3E_BIN_TYPE_L  = 0x92 //所存继电器 位 输入地址为10进制
+	MC_3E_BIN_TYPE_L  = 0x92 //锁存继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_F  = 0x93 //报警器 位 输入地址为10进制
 	//MC_3E_BIN_TYPE_V  = 0x94 //边沿继电器 位 输入地址为10进制
 	MC_3E_BIN_TYPE_B  = 0xA0 //链接继电器 位 输入地址为10进制
@@ -155,7 +155,7 @@ func (e *Mc3eError) Error() string {
 	default:
 		name = "未知错误"
 	}
-	return fmt.Sprintf("mc3e:错误码'%x'(%s),function '%x'", e.ExceptionCode, name, e.EndCode)
+	return fmt.Sprintf("mc3e:错误码'%x'(%s)'", e.ExceptionCode, name)
 }
 
 /*

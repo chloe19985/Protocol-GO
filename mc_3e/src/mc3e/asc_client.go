@@ -10,11 +10,6 @@ import (
 )
 
 const (
-	//MC_3E_ASC_SUB_HEADER uint16 = 0x5000 //副帧头
-	//MC_3E_ASC_NET_NUMBER        = 0x00   //请求目标网络编号
-	//MC_3E_ASC_OBJECT            = 0xFF   //请求目标站号
-	//MC_3E_ASC_IO_NUMBER  uint16 = 0x03FF //请求目标模板IO编号
-	//MC_3E_ASC_SLAVE             = 0x00   //请求多占站号
 
 	MC_3E_ASC_ADU_HEADER          = 18 //副帧头~请求数据长度
 	MC_3E_ASC_COMMAND_POSITION    = 22 //指令
@@ -22,11 +17,7 @@ const (
 	MC_3E_ASC_REGISTER_CODE       = 30 //寄存器相关信息长度
 	MC_3E_ASC_REGISTER_ADDRESS    = 32
 	MC_3E_ASC_REGISTER_NUMBER     = 38
-	//MC_3E_MAX_ADU_LENGTH = 512 //报文最大长度
-	//
-	//// Default TCP timeout is not set
-	//tcpTimeout     = 10 * time.Second
-	//tcpIdleTimeout = 60 * time.Second
+
 )
 
 type ASCClientHandler struct {
@@ -80,7 +71,7 @@ func (mb *ascTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 	//指令
 	McSetBinToChar(adu,MC_3E_ASC_COMMAND_POSITION,binary.BigEndian.Uint16(pdu.Command))
 	McSetBinToChar(adu,MC_3E_ASC_COMMAND_POSITION + 2,binary.BigEndian.Uint16(pdu.Command) >> 8 )
-	//copy(adu[MC_3E_BIN_COMMAND_POSITION:], pdu.Command)
+
 	//子指令
 	McSetBinToChar(adu,MC_3E_ASC_SUBCOMMAND_POSITION,binary.BigEndian.Uint16(pdu.SubCommand))
 	McSetBinToChar(adu,MC_3E_ASC_SUBCOMMAND_POSITION + 2,binary.BigEndian.Uint16(pdu.SubCommand)>>8)
@@ -94,17 +85,6 @@ func (mb *ascTransporter)Encode(pdu *ProtocolDataUnit) (adu []byte, err error) {
 	return
 }
 
-/*func (mb *binPackager) Verify(aduRequest []byte,aduResponse []byte)(err error){
-	//帧头~请求多点站号
-	responseVal := binary.BigEndian.Uint16(aduResponse[:7])
-	requestVal := binary.BigEndian.Uint16(aduRequest[:7])
-	if responseVal != requestVal {
-		err = fmt.Errorf("response header '%v' does not match request '%v'", responseVal, requestVal)
-		return
-	}
-	responseVal = binary.BigEndian.Uint16(aduResponse[])
-
-}*/
 func (mb *ascTransporter)Decode(adu []byte) (pdu *ProtocolDataUnit, err error) {
 	length := binary.BigEndian.Uint32(adu[MC_3E_ASC_ADU_HEADER-4:])
 	//fmt.Printf("%d",length)
@@ -189,7 +169,7 @@ func (mb *ascTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 	//fmt.Printf("aduRequest:%d\n",aduRequest)
 	//读取副帧头~请求数据长度
 	var data [MC_3E_MAX_ADU_LENGTH]byte
-	//ReadFull从mb.conn中读取len(data)字节到data。即先读取副帧头~请求数据长度
+	//ReadFull从mb.conn中读取len(data)字节到data;即先读取副帧头~请求数据长度
 	//n,_ := io.ReadFull(mb.conn, data[:MC_3E_BIN_ADU_HEADER])
 	//fmt.Printf("n:%d\n",n)
 	if _, err = io.ReadFull(mb.conn, data[:MC_3E_ASC_ADU_HEADER]); err != nil {
@@ -197,7 +177,15 @@ func (mb *ascTransporter) Send(aduRequest []byte) (aduResponse []byte, err error
 	}
 
 	//读取请求数据长度
-	length := int(binary.LittleEndian.Uint16(data[MC_3E_ASC_ADU_HEADER-2:]))
+	length := binary.BigEndian.Uint32(data[MC_3E_ASC_ADU_HEADER-4:MC_3E_ASC_ADU_HEADER])
+
+
+    b := Uint32ToBytes(length)
+	//McSetCharToBin(,0,b)
+    length = uint32(McCharToBin(b[0]))*(16^3) + uint32(McCharToBin(b[1]))*(16^2)  + uint32(McCharToBin(b[2]))*16 + uint32(McCharToBin(b[3]))
+	fmt.Printf("length:% x\n",length)
+
+
 	//fmt.Printf("length:%d/n",length)
 	if length <= 0 {
 		mb.flush(data[:])
